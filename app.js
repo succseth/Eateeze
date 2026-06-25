@@ -1295,7 +1295,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("btn-continue-guest").addEventListener("click", () => {
-    STATE.user.name = "Alex";
+    STATE.user.name = "Guest";
     showScreen("screen-onboarding");
   });
 
@@ -1336,7 +1336,10 @@ document.addEventListener("DOMContentLoaded", () => {
     executeAIGenerationFlow(() => {
       // Sync values to profile settings
       syncRestrictionPillsProfile();
-      
+
+      // Update welcome text and profile card with the logged-in user's name
+      updateUserDisplay();
+
       // Go to feed tab
       handleTabSwitch("feed");
       showScreen("screen-main");
@@ -1490,8 +1493,41 @@ document.addEventListener("DOMContentLoaded", () => {
     handleTabSwitch("profile");
   });
 
+  // Theme toggle (Light / Dark mode)
+  const themeToggleBtn = document.getElementById("theme-toggle");
+  const themeLabel = document.getElementById("theme-label");
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      const isLight = document.documentElement.classList.toggle("light-mode");
+      themeToggleBtn.classList.toggle("active", isLight);
+      themeLabel.textContent = isLight ? "Dark Mode" : "Light Mode";
+    });
+  }
+
   // INITIALIZE BASE WEEKLY PLAN & INTAKE ON STARTUP
   generateWeeklyMealPlan();
   syncRestrictionPillsOnboarding();
 
 });
+
+// ==========================================================================
+// HELPER: Update displayed username in feed header and profile card
+// ==========================================================================
+function updateUserDisplay() {
+  const name = STATE.user.name || "User";
+  // Update feed welcome text (top left of feed panel)
+  const welcomeEl = document.getElementById("welcome-user");
+  if (welcomeEl) {
+    welcomeEl.textContent = `Hey ${name}!`;
+  }
+  // Update profile avatar initials and name
+  const avatarEl = document.getElementById("profile-avatar");
+  if (avatarEl) {
+    const initials = name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
+    avatarEl.textContent = initials;
+  }
+  const usernameEl = document.getElementById("profile-username");
+  if (usernameEl) {
+    usernameEl.textContent = name;
+  }
+}
