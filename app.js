@@ -263,7 +263,7 @@ const RECIPES_DB = [
   {
     id: "recipe-keto-shrimp",
     title: "Garlic Butter Lemon Shrimp & Zoodles",
-    image: "https://images.unsplash.com/photo-1559742811-824289528580?w=600&auto=format&fit=crop&q=60",
+    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=60",
     tags: ["Keto", "Gluten Free"],
     prepTime: "15 mins",
     calories: 450,
@@ -1282,6 +1282,31 @@ function buildCustomRecipeFromAI() {
 // ==========================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Login screen buttons
+  document.getElementById("btn-login").addEventListener("click", () => {
+    const email = document.getElementById("login-email").value.trim();
+    if (email) {
+      // Extract name from email prefix
+      const nameFromEmail = email.split("@")[0];
+      STATE.user.name = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+    }
+    showScreen("screen-onboarding");
+  });
+
+  document.getElementById("btn-continue-guest").addEventListener("click", () => {
+    STATE.user.name = "Alex";
+    showScreen("screen-onboarding");
+  });
+
+  document.getElementById("login-signup-link").addEventListener("click", () => {
+    showScreen("screen-onboarding");
+  });
+
+  // Save Preferences inline button — toggle .saved for green state
+  document.getElementById("btn-save-preferences").addEventListener("click", function() {
+    this.classList.add("saved");
+  }, { capture: true }); // runs before the main save handler below
 
   // Onboarding Goal Cards Click
   document.querySelectorAll("#screen-onboarding .goal-card").forEach(card => {

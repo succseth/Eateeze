@@ -654,7 +654,219 @@ h5 {
 .onboarding-footer {
   margin-top: auto;
   padding-top: 16px;
+  display: none; /* footer replaced by inline save button */
 }
+
+/* ==========================================================================
+   SCREEN 0: LOGIN SCREEN STYLES
+   ========================================================================== */
+#screen-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 24px;
+  background: radial-gradient(ellipse at 30% 20%, rgba(46, 125, 50, 0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 80%, rgba(0, 191, 165, 0.08) 0%, transparent 60%),
+              var(--bg-dark);
+}
+
+.login-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.login-logo {
+  text-align: center;
+}
+
+.login-logo-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--primary-deep), var(--teal-accent));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin: 0 auto 12px;
+  box-shadow: 0 8px 24px rgba(46, 125, 50, 0.35);
+}
+
+.login-app-name {
+  font-size: 34px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff, var(--primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1.5px;
+  margin-bottom: 4px;
+}
+
+.login-tagline {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.login-form-card {
+  width: 100%;
+  background: var(--bg-dark-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.login-form-title {
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.login-form-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.login-input-group {
+  margin-bottom: 14px;
+}
+
+.login-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.login-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  color: var(--text-muted);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.login-input-wrapper:focus-within {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
+  color: var(--primary-light);
+}
+
+.login-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-light);
+  font-family: var(--font-main);
+  font-size: 14px;
+}
+
+.login-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-login-submit {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.btn-login-guest {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-login-guest:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-light);
+}
+
+.login-signup-prompt {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.login-signup-prompt span {
+  color: var(--primary-light);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-signup-prompt span:hover {
+  text-decoration: underline;
+}
+
+/* Inline Save Preferences button (inside restriction pills) */
+.btn-save-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid var(--primary-light);
+  color: var(--primary-light);
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-save-inline:hover {
+  background: rgba(76, 175, 80, 0.1);
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.2);
+}
+
+.btn-save-inline.saved {
+  background: var(--primary-light);
+  color: #fff;
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-green);
+}
+
 
 /* ==========================================================================
    SCREEN 2 PANEL A: FEED SCREEN STYLES
