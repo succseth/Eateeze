@@ -129,6 +129,46 @@
             </button>
           </div>
         </div>
+        <!-- Step 3: BMI Calculator (collapsible) -->
+        <div class="onboarding-section bmi-section">
+          <button class="bmi-toggle-btn" id="bmi-toggle-onboarding" aria-expanded="false">
+            <div class="bmi-toggle-left">
+              <div class="bmi-toggle-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div>
+                <span class="bmi-toggle-title">BMI Calculator</span>
+                <span class="bmi-toggle-sub">Optional · personalizes calorie targets</span>
+              </div>
+            </div>
+            <svg class="bmi-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="bmi-panel" id="bmi-panel-onboarding">
+            <div class="bmi-inputs-row">
+              <div class="bmi-input-group">
+                <label>Height (cm)</label>
+                <input type="number" class="bmi-input" id="bmi-height-onboarding" placeholder="175" min="100" max="250">
+              </div>
+              <div class="bmi-input-group">
+                <label>Weight (kg)</label>
+                <input type="number" class="bmi-input" id="bmi-weight-onboarding" placeholder="70" min="30" max="300">
+              </div>
+            </div>
+            <div class="bmi-result" id="bmi-result-onboarding">
+              <div class="bmi-result-score" id="bmi-score-onboarding">--</div>
+              <div class="bmi-result-label" id="bmi-label-onboarding">Enter height & weight</div>
+              <div class="bmi-scale">
+                <div class="bmi-scale-bar">
+                  <div class="bmi-scale-fill" id="bmi-scale-fill-onboarding"></div>
+                  <div class="bmi-scale-marker" id="bmi-marker-onboarding"></div>
+                </div>
+                <div class="bmi-scale-labels">
+                  <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -350,6 +390,47 @@
                 <button class="pill-btn" data-restriction="Keto">Keto</button>
                 <button class="pill-btn" data-restriction="Dairy Free">Dairy Free</button>
                 <button class="pill-btn" data-restriction="Paleo">Paleo</button>
+              </div>
+            </div>
+
+            <!-- BMI Calculator (collapsible, in profile) -->
+            <div class="profile-input-group">
+              <button class="bmi-toggle-btn" id="bmi-toggle-profile" aria-expanded="false">
+                <div class="bmi-toggle-left">
+                  <div class="bmi-toggle-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  </div>
+                  <div>
+                    <span class="bmi-toggle-title">BMI Calculator</span>
+                    <span class="bmi-toggle-sub">Optional · personalizes calorie targets</span>
+                  </div>
+                </div>
+                <svg class="bmi-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="bmi-panel" id="bmi-panel-profile">
+                <div class="bmi-inputs-row">
+                  <div class="bmi-input-group">
+                    <label>Height (cm)</label>
+                    <input type="number" class="bmi-input" id="bmi-height-profile" placeholder="175" min="100" max="250">
+                  </div>
+                  <div class="bmi-input-group">
+                    <label>Weight (kg)</label>
+                    <input type="number" class="bmi-input" id="bmi-weight-profile" placeholder="70" min="30" max="300">
+                  </div>
+                </div>
+                <div class="bmi-result" id="bmi-result-profile">
+                  <div class="bmi-result-score" id="bmi-score-profile">--</div>
+                  <div class="bmi-result-label" id="bmi-label-profile">Enter height & weight</div>
+                  <div class="bmi-scale">
+                    <div class="bmi-scale-bar">
+                      <div class="bmi-scale-fill" id="bmi-scale-fill-profile"></div>
+                      <div class="bmi-scale-marker" id="bmi-marker-profile"></div>
+                    </div>
+                    <div class="bmi-scale-labels">
+                      <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

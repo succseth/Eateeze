@@ -720,8 +720,8 @@ function renderRecipeFeed() {
       <div class="card-body">
         <h4>${recipe.title}</h4>
         <div class="card-stats">
-          <span>🔥 ${recipe.calories} kcal</span>
-          <span>⏱️ ${recipe.prepTime}</span>
+          <span class="stat-cal"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 0-5 5-5 10a5 5 0 0 0 10 0c0-5-5-10-5-10z"/><path d="M12 12v4"/></svg> ${recipe.calories} kcal</span>
+          <span class="stat-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${recipe.prepTime}</span>
         </div>
       </div>
     `;
@@ -747,8 +747,8 @@ function renderRecipeFeed() {
           <div class="tag-line">${tagLine}</div>
         </div>
         <div class="footer-stats">
-          <span style="color: var(--primary-deep); font-weight: 700;">🔥 ${recipe.calories} kcal</span>
-          <span>⏱️ ${recipe.prepTime}</span>
+          <span class="stat-cal" style="color: var(--primary-deep); font-weight: 700;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 0-5 5-5 10a5 5 0 0 0 10 0c0-5-5-10-5-10z"/><path d="M12 12v4"/></svg> ${recipe.calories} kcal</span>
+          <span class="stat-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${recipe.prepTime}</span>
         </div>
       </div>
     `;
@@ -919,7 +919,7 @@ function renderMealPlanner() {
     const totalDayCals = dayData.breakfast.calories + dayData.lunch.calories + dayData.dinner.calories;
 
     daySection.innerHTML = `
-      <h3>${day} <span>🔥 ${totalDayCals} kcal total</span></h3>
+      <h3>${day} <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M12 2c0 0-5 5-5 10a5 5 0 0 0 10 0c0-5-5-10-5-10z"/><path d="M12 12v4"/></svg> ${totalDayCals} kcal total</span></h3>
       <div class="plan-meals-grid">
         <!-- Breakfast -->
         <div class="plan-meal-item" data-id="${dayData.breakfast.id}">
@@ -927,7 +927,7 @@ function renderMealPlanner() {
           <img src="${dayData.breakfast.image}" alt="${dayData.breakfast.title}">
           <div class="meal-summary-info">
             <h4>${dayData.breakfast.title}</h4>
-            <p>⏱️ ${dayData.breakfast.prepTime} &bull; 🔥 ${dayData.breakfast.calories} kcal</p>
+            <p><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${dayData.breakfast.prepTime} &bull; <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M12 2c0 0-5 5-5 10a5 5 0 0 0 10 0c0-5-5-10-5-10z"/><path d="M12 12v4"/></svg> ${dayData.breakfast.calories} kcal</p>
           </div>
         </div>
         <!-- Lunch -->
@@ -936,7 +936,7 @@ function renderMealPlanner() {
           <img src="${dayData.lunch.image}" alt="${dayData.lunch.title}">
           <div class="meal-summary-info">
             <h4>${dayData.lunch.title}</h4>
-            <p>⏱️ ${dayData.lunch.prepTime} &bull; 🔥 ${dayData.lunch.calories} kcal</p>
+            <p><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${dayData.lunch.prepTime} &bull; <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M12 2c0 0-5 5-5 10a5 5 0 0 0 10 0c0-5-5-10-5-10z"/><path d="M12 12v4"/></svg> ${dayData.lunch.calories} kcal</p>
           </div>
         </div>
         <!-- Dinner -->
@@ -945,7 +945,7 @@ function renderMealPlanner() {
           <img src="${dayData.dinner.image}" alt="${dayData.dinner.title}">
           <div class="meal-summary-info">
             <h4>${dayData.dinner.title}</h4>
-            <p>⏱️ ${dayData.dinner.prepTime} &bull; 🔥 ${dayData.dinner.calories} kcal</p>
+            <p><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${dayData.dinner.prepTime} &bull; <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M12 2c0 0-5 5-5 10a5 5 0 0 0 10 0c0-5-5-10-5-10z"/><path d="M12 12v4"/></svg> ${dayData.dinner.calories} kcal</p>
           </div>
         </div>
       </div>
@@ -1434,7 +1434,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderCookingStep();
     } else {
       // Completed cooking! Show nice alert and go back
-      alert(`🎉 Congratulations! You have successfully plated: "${recipe.title}"! Enjoy your delicious AI-precision meal!`);
+      alert(`Congratulations! You have successfully plated: "${recipe.title}"! Enjoy your delicious AI-precision meal!`);
       showScreen("screen-detail");
     }
   });
@@ -1531,3 +1531,91 @@ function updateUserDisplay() {
     usernameEl.textContent = name;
   }
 }
+
+// ==========================================================================
+// BMI CALCULATOR LOGIC
+// ==========================================================================
+
+function calcBMI(hId, wId, scoreId, labelId, markerId) {
+  const height = parseFloat(document.getElementById(hId).value);
+  const weight = parseFloat(document.getElementById(wId).value);
+  const scoreEl = document.getElementById(scoreId);
+  const labelEl = document.getElementById(labelId);
+  const markerEl = document.getElementById(markerId);
+
+  if (!height || !weight || height < 100 || weight < 20) {
+    scoreEl.textContent = "--";
+    scoreEl.className = "bmi-result-score";
+    labelEl.textContent = "Enter height & weight";
+    if (markerEl) markerEl.style.left = "0%";
+    return;
+  }
+
+  const bmi = weight / ((height / 100) ** 2);
+  const rounded = bmi.toFixed(1);
+  scoreEl.textContent = rounded;
+
+  let category, cls, markerPct;
+  if (bmi < 18.5) {
+    category = "Underweight"; cls = "underweight";
+    markerPct = Math.max(0, ((bmi - 10) / 8.5) * 25);
+  } else if (bmi < 25) {
+    category = "Healthy Weight"; cls = "normal";
+    markerPct = 25 + ((bmi - 18.5) / 6.5) * 37.5;
+  } else if (bmi < 30) {
+    category = "Overweight"; cls = "overweight";
+    markerPct = 62.5 + ((bmi - 25) / 5) * 19.5;
+  } else {
+    category = "Obese"; cls = "obese";
+    markerPct = Math.min(99, 82 + ((bmi - 30) / 10) * 18);
+  }
+
+  scoreEl.className = `bmi-result-score ${cls}`;
+  labelEl.textContent = category;
+  if (markerEl) markerEl.style.left = `${markerPct}%`;
+
+  // Auto-suggest goal based on BMI result
+  if (cls === "underweight") {
+    STATE.user.goal = "Build muscle";
+  } else if (cls === "overweight" || cls === "obese") {
+    STATE.user.goal = "Lose weight";
+  }
+}
+
+function initBMIToggles() {
+  const configs = [
+    {
+      btnId: "bmi-toggle-onboarding", panelId: "bmi-panel-onboarding",
+      hId: "bmi-height-onboarding", wId: "bmi-weight-onboarding",
+      scoreId: "bmi-score-onboarding", labelId: "bmi-label-onboarding",
+      markerId: "bmi-marker-onboarding",
+    },
+    {
+      btnId: "bmi-toggle-profile", panelId: "bmi-panel-profile",
+      hId: "bmi-height-profile", wId: "bmi-weight-profile",
+      scoreId: "bmi-score-profile", labelId: "bmi-label-profile",
+      markerId: "bmi-marker-profile",
+    },
+  ];
+
+  configs.forEach(({ btnId, panelId, hId, wId, scoreId, labelId, markerId }) => {
+    const btn = document.getElementById(btnId);
+    const panel = document.getElementById(panelId);
+    if (!btn || !panel) return;
+
+    btn.addEventListener("click", () => {
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      panel.classList.toggle("open", !expanded);
+    });
+
+    [hId, wId].forEach(id => {
+      const input = document.getElementById(id);
+      if (input) input.addEventListener("input", () => calcBMI(hId, wId, scoreId, labelId, markerId));
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initBMIToggles();
+});
