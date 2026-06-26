@@ -1111,7 +1111,10 @@ function renderCookingStep() {
     
     // Find matching items from base recipe
     step.ingredients.forEach((ingName, idx) => {
-      const matchIng = recipe.ingredients.find(i => i.name.includes(ingName) || ingName.includes(i.name));
+      const matchIng = recipe.ingredients.find(i => 
+        i.name.toLowerCase().includes(ingName.toLowerCase()) || 
+        ingName.toLowerCase().includes(i.name.toLowerCase())
+      );
       const scaledVal = matchIng ? Math.round((matchIng.amount / 2) * STATE.servingsCount * 10) / 10 : "";
       const unit = matchIng ? matchIng.unit : "";
       
@@ -1197,25 +1200,173 @@ function executeAIGenerationFlow(onComplete) {
 function buildCustomRecipeFromAI() {
   const goal = STATE.user.goal;
   const restrictions = STATE.user.restrictions;
-  const params = GOAL_PARAMETERS[goal];
+  const params = GOAL_PARAMETERS[goal] || GOAL_PARAMETERS["Lose weight"];
 
   // Dynamic names matching diets
   let title = "AI Custom Grilled Plate";
   let image = "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60";
   let tags = [...restrictions];
+  
+  let ingredients = [
+    { name: "Lean Chicken Breast", amount: 150, unit: "g" },
+    { name: "Steamed Sweet Potato", amount: 120, unit: "g" },
+    { name: "Organic Asparagus", amount: 80, unit: "g" },
+    { name: "Extra Virgin Olive Oil", amount: 1, unit: "tbsp" },
+    { name: "Fresh Garlic Cloves", amount: 2, unit: "pieces" }
+  ];
+
+  let steps = [
+    {
+      title: "Clean and Season",
+      desc: "Wash the chicken breast and asparagus. Season the chicken generously with garlic powder, salt, and pepper, rub with olive oil.",
+      ingredients: ["Lean Chicken Breast", "Extra Virgin Olive Oil"]
+    },
+    {
+      title: "Steam Veggies",
+      desc: "Steam the sweet potato cubes and asparagus for 6 minutes until tender-crisp.",
+      ingredients: ["Steamed Sweet Potato", "Organic Asparagus"]
+    },
+    {
+      title: "Grill Chicken",
+      desc: "Heat a grill pan over medium-high heat. Cook chicken for 6 minutes per side until the internal temperature reaches 74°C (165°F).",
+      ingredients: ["Lean Chicken Breast"]
+    },
+    {
+      title: "Assemble and Plate",
+      desc: "Slice the grilled chicken and arrange alongside the steamed sweet potatoes and asparagus, drizzling with remaining olive oil.",
+      ingredients: []
+    }
+  ];
 
   if (restrictions.includes("Vegan")) {
     title = "AI Golden Turmeric Tempeh Bowl";
     image = "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=60";
+    ingredients = [
+      { name: "Organic Tempeh (cubed)", amount: 150, unit: "g" },
+      { name: "Fresh Broccoli & Spinach", amount: 120, unit: "g" },
+      { name: "Organic Turmeric Powder", amount: 0.5, unit: "tsp" },
+      { name: "Tahini Dressing", amount: 2, unit: "tbsp" },
+      { name: "Fresh Garlic Cloves", amount: 2, unit: "pieces" }
+    ];
+    steps = [
+      {
+        title: "Prep Greens and Tempeh",
+        desc: "Wash and dry the organic spinach and broccoli. Cube the tempeh and toss with turmeric, salt, and pepper.",
+        ingredients: ["Organic Tempeh (cubed)", "Organic Turmeric Powder"]
+      },
+      {
+        title: "Sauté Aromatics",
+        desc: "Heat a small amount of water or olive oil in a pan. Sauté the minced garlic cloves for 1 minute until fragrant.",
+        ingredients: ["Fresh Garlic Cloves"]
+      },
+      {
+        title: "Sear Tempeh and Veggies",
+        desc: "Add seasoned tempeh to the hot pan. Cook for 4 minutes per side until golden. Toss in the fresh broccoli and spinach in the final minute to steam.",
+        ingredients: ["Organic Tempeh (cubed)", "Fresh Broccoli & Spinach"]
+      },
+      {
+        title: "Plate and Drizzle",
+        desc: "Arrange the seared tempeh and greens in a bowl. Drizzle with the creamy tahini dressing.",
+        ingredients: ["Tahini Dressing"]
+      }
+    ];
   } else if (restrictions.includes("Keto")) {
     title = "AI Herb Butter Ribeye Steak & Asparagus";
     image = "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=60";
+    ingredients = [
+      { name: "Ribeye Steak", amount: 180, unit: "g" },
+      { name: "Fresh Asparagus Spears", amount: 120, unit: "g" },
+      { name: "Grass-Fed Butter", amount: 2, unit: "tbsp" },
+      { name: "Fresh Rosemary & Thyme", amount: 1, unit: "tsp" },
+      { name: "Fresh Garlic Cloves", amount: 2, unit: "pieces" }
+    ];
+    steps = [
+      {
+        title: "Season Steak",
+        desc: "Pat the ribeye steak dry with paper towels. Season generously with coarse salt, black pepper, and minced fresh rosemary.",
+        ingredients: ["Ribeye Steak", "Fresh Rosemary & Thyme"]
+      },
+      {
+        title: "Melt Herb Butter",
+        desc: "Melt the grass-fed butter in a hot cast-iron skillet over medium-high heat. Add the crushed garlic cloves.",
+        ingredients: ["Grass-Fed Butter", "Fresh Garlic Cloves"]
+      },
+      {
+        title: "Sear Steak and Asparagus",
+        desc: "Place the steak in the hot skillet. Sear for 3-4 minutes per side, spooning the herb butter over the steak. Toss asparagus into the pan during the final 3 minutes.",
+        ingredients: ["Ribeye Steak", "Fresh Asparagus Spears"]
+      },
+      {
+        title: "Rest and Plate",
+        desc: "Let the steak rest for 5 minutes. Arrange the steak slices alongside the tender asparagus, drizzling with remaining pan juices.",
+        ingredients: []
+      }
+    ];
   } else if (restrictions.includes("Paleo")) {
     title = "AI Lemon Pesto Turkey Patties";
     image = "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&auto=format&fit=crop&q=60";
+    ingredients = [
+      { name: "Ground Turkey Breast", amount: 160, unit: "g" },
+      { name: "Baby Zucchini & Cauliflower", amount: 120, unit: "g" },
+      { name: "Cold-Pressed Avocado Oil", amount: 1, unit: "tbsp" },
+      { name: "Fresh Basil Pesto (dairy-free)", amount: 2, unit: "tbsp" },
+      { name: "Fresh Garlic Cloves", amount: 2, unit: "pieces" }
+    ];
+    steps = [
+      {
+        title: "Form Turkey Patties",
+        desc: "In a bowl, mix ground turkey with minced garlic, salt, and pepper. Shape into 3 even circular patties.",
+        ingredients: ["Ground Turkey Breast", "Fresh Garlic Cloves"]
+      },
+      {
+        title: "Sauté Veggies",
+        desc: "Heat avocado oil in a skillet. Sauté baby zucchini and cauliflower pieces until browned and tender, then set aside.",
+        ingredients: ["Baby Zucchini & Cauliflower", "Cold-Pressed Avocado Oil"]
+      },
+      {
+        title: "Sear Patties",
+        desc: "Add patties to the hot skillet. Cook for 5 minutes per side until the internal temperature reaches 74°C (165°F).",
+        ingredients: ["Ground Turkey Breast"]
+      },
+      {
+        title: "Plate and Drizzle",
+        desc: "Arrange turkey patties over the sautéed zucchini and cauliflower. Drizzle the dairy-free pesto over the patties.",
+        ingredients: ["Fresh Basil Pesto (dairy-free)"]
+      }
+    ];
   } else if (restrictions.includes("Gluten Free") && restrictions.includes("Dairy Free")) {
     title = "AI Garlic Chicken Avocado Rice Bowl";
     image = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=60";
+    ingredients = [
+      { name: "Chicken Breast (cubed)", amount: 150, unit: "g" },
+      { name: "Ripe Avocado (sliced)", amount: 1, unit: "piece" },
+      { name: "Jasmine Rice (cooked)", amount: 100, unit: "g" },
+      { name: "Cold-Pressed Olive Oil", amount: 1, unit: "tbsp" },
+      { name: "Coconut Aminos", amount: 2, unit: "tbsp" },
+      { name: "Fresh Garlic Cloves", amount: 2, unit: "pieces" }
+    ];
+    steps = [
+      {
+        title: "Marinate Chicken",
+        desc: "Toss cubed chicken breast with minced garlic, olive oil, and coconut aminos in a bowl. Let marinate for 5 minutes.",
+        ingredients: ["Chicken Breast (cubed)", "Cold-Pressed Olive Oil", "Coconut Aminos", "Fresh Garlic Cloves"]
+      },
+      {
+        title: "Pan-Fry Chicken",
+        desc: "Cook the marinated chicken in a hot skillet for 6-8 minutes, stirring frequently, until golden and cooked through.",
+        ingredients: ["Chicken Breast (cubed)"]
+      },
+      {
+        title: "Assemble Bowl",
+        desc: "Place the warm cooked jasmine rice in a bowl. Arrange the garlic chicken over the top.",
+        ingredients: ["Jasmine Rice (cooked)"]
+      },
+      {
+        title: "Garnish and Serve",
+        desc: "Add the sliced avocado to the bowl. Drizzle with extra coconut aminos to taste.",
+        ingredients: ["Ripe Avocado (sliced)"]
+      }
+    ];
   }
 
   // Calculate strict calorie target matching current user constraints
@@ -1245,35 +1396,8 @@ function buildCustomRecipeFromAI() {
         { name: "Zinc", percent: 18 }
       ]
     },
-    ingredients: [
-      { name: "AI Premium Selected Protein", amount: 160, unit: "g" },
-      { name: "AI Nutrient Dense Greens", amount: 120, unit: "g" },
-      { name: "Cold-Pressed Avocado Oil", amount: 1, unit: "tbsp" },
-      { name: "Bespoke Herb Seasoning Blend", amount: 1, unit: "tsp" },
-      { name: "Fresh Garlic Cloves", amount: 2, unit: "pieces" }
-    ],
-    steps: [
-      {
-        title: "Clean and Season",
-        desc: "Wash the premium protein and organic greens under cool water. Dry thoroughly, then rub down the protein with the bespoke herb seasoning blend and a pinch of pink salt.",
-        ingredients: ["AI Premium Selected Protein", "Bespoke Herb Seasoning Blend"]
-      },
-      {
-        title: "Sauté Aromatics",
-        desc: "Heat the cold-pressed avocado oil in a flat-bottom pan over medium heat. Sauté the crushed garlic cloves for 1 minute until lightly toasted and fragrant.",
-        ingredients: ["Cold-Pressed Avocado Oil", "Fresh Garlic Cloves"]
-      },
-      {
-        title: "Sear Protein Plate",
-        desc: "Add seasoned protein to the hot oil. Sear for 4 minutes on each side until fully cooked and outer glaze is formed. Toss in the nutrient greens in the final minute to gently steam them.",
-        ingredients: ["AI Premium Selected Protein", "AI Nutrient Dense Greens"]
-      },
-      {
-        title: "Plate and Drizzle",
-        desc: "Slice the seared protein, arrange it beautifully over the bed of steamed greens, and drizzle with the remaining aromatic oil from the pan.",
-        ingredients: []
-      }
-    ]
+    ingredients: ingredients,
+    steps: steps
   };
 }
 
