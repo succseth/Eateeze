@@ -1533,89 +1533,508 @@ function updateUserDisplay() {
 }
 
 // ==========================================================================
-// BMI CALCULATOR LOGIC
+// NEW CALCULATORS DASHBOARD LOGIC
 // ==========================================================================
 
-function calcBMI(hId, wId, scoreId, labelId, markerId) {
-  const height = parseFloat(document.getElementById(hId).value);
-  const weight = parseFloat(document.getElementById(wId).value);
-  const scoreEl = document.getElementById(scoreId);
-  const labelEl = document.getElementById(labelId);
-  const markerEl = document.getElementById(markerId);
+let currentUnitSystem = "us";
 
-  if (!height || !weight || height < 100 || weight < 20) {
-    scoreEl.textContent = "--";
-    scoreEl.className = "bmi-result-score";
-    labelEl.textContent = "Enter height & weight";
-    if (markerEl) markerEl.style.left = "0%";
+function updateUnitInputs(system) {
+  currentUnitSystem = system;
+  const rowHeight = document.getElementById("row-height");
+  const rowWeight = document.getElementById("row-weight");
+  if (!rowHeight || !rowWeight) return;
+
+  if (system === "us") {
+    rowHeight.innerHTML = `
+      <div class="calc-input-group height-ft-group">
+        <label class="calc-label">Height (feet)</label>
+        <input type="number" id="calc-height-ft" class="calc-input-field" value="5" min="1" max="8">
+      </div>
+      <div class="calc-input-group height-in-group">
+        <label class="calc-label">Height (inches)</label>
+        <input type="number" id="calc-height-in" class="calc-input-field" value="10" min="0" max="11">
+      </div>
+    `;
+    rowWeight.innerHTML = `
+      <div class="calc-input-group">
+        <label class="calc-label">Weight (lbs)</label>
+        <input type="number" id="calc-weight-us-lbs" class="calc-input-field" value="165" min="30" max="800">
+      </div>
+    `;
+  } else if (system === "metric") {
+    rowHeight.innerHTML = `
+      <div class="calc-input-group">
+        <label class="calc-label">Height (cm)</label>
+        <input type="number" id="calc-height-cm" class="calc-input-field" value="178" min="80" max="250">
+      </div>
+    `;
+    rowWeight.innerHTML = `
+      <div class="calc-input-group">
+        <label class="calc-label">Weight (kg)</label>
+        <input type="number" id="calc-weight-kg" class="calc-input-field" value="75" min="20" max="400">
+      </div>
+    `;
+  } else if (system === "other") {
+    rowHeight.innerHTML = `
+      <div class="calc-input-group">
+        <label class="calc-label">Height (meters)</label>
+        <input type="number" id="calc-height-m" class="calc-input-field" value="1.78" min="0.5" max="2.5" step="0.01">
+      </div>
+    `;
+    rowWeight.innerHTML = `
+      <div class="calc-input-row" style="width: 100%; gap: 16px;">
+        <div class="calc-input-group" style="flex: 1;">
+          <label class="calc-label">Weight (stones)</label>
+          <input type="number" id="calc-weight-stone" class="calc-input-field" value="11" min="1" max="60">
+        </div>
+        <div class="calc-input-group" style="flex: 1;">
+          <label class="calc-label">Weight (lbs)</label>
+          <input type="number" id="calc-weight-other-lbs" class="calc-input-field" value="11" min="0" max="13">
+        </div>
+      </div>
+    `;
+  }
+}
+
+function runFoodEnergyConversion() {
+  const inputValEl = document.getElementById("converter-input-val");
+  const fromEl = document.getElementById("converter-from");
+  const toEl = document.getElementById("converter-to");
+  const outputEl = document.getElementById("converter-output-display");
+  if (!inputValEl || !fromEl || !toEl || !outputEl) return;
+
+  const val = parseFloat(inputValEl.value);
+  if (isNaN(val)) {
+    outputEl.textContent = "--";
     return;
   }
 
-  const bmi = weight / ((height / 100) ** 2);
-  const rounded = bmi.toFixed(1);
-  scoreEl.textContent = rounded;
+  const from = fromEl.value;
+  const to = toEl.value;
 
-  let category, cls, markerPct;
+  // Convert "from" to kcal base
+  let kcal = 0;
+  if (from === "kcal") kcal = val;
+  else if (from === "cal") kcal = val / 1000;
+  else if (from === "kJ") kcal = val / 4.184;
+  else if (from === "J") kcal = val / 4184;
+
+  // Convert kcal base to "to"
+  let result = 0;
+  if (to === "kcal") result = kcal;
+  else if (to === "cal") result = kcal * 1000;
+  else if (to === "kJ") result = kcal * 4.184;
+  else if (to === "J") result = kcal * 4184;
+
+  outputEl.textContent = result.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 4 });
+}
+
+function calculateCalorieAndBMI() {
+  const ageEl = document.getElementById("calc-age");
+  if (!ageEl) return;
+
+  const age = parseInt(ageEl.value);
+  const gender = document.querySelector('input[name="calc-gender"]:checked').value;
+  const activity = document.getElementById("calc-activity").value;
+
+  const settingsUnit = document.getElementById("calc-settings-unit").value;
+  const formula = document.getElementById("calc-settings-formula").value;
+  const bodyFat = parseFloat(document.getElementById("calc-bodyfat").value || 20);
+
+  if (isNaN(age) || age < 15 || age > 80) {
+    alert("Please enter a valid age between 15 and 80.");
+    return;
+  }
+
+  let heightCm = 0;
+  let weightKg = 0;
+
+  if (currentUnitSystem === "us") {
+    const ft = parseFloat(document.getElementById("calc-height-ft").value);
+    const inch = parseFloat(document.getElementById("calc-height-in").value || 0);
+    const lbs = parseFloat(document.getElementById("calc-weight-us-lbs").value);
+
+    if (isNaN(ft) || ft < 1 || isNaN(lbs) || lbs < 30) {
+      alert("Please enter valid height and weight values.");
+      return;
+    }
+    heightCm = (ft * 12 + inch) * 2.54;
+    weightKg = lbs * 0.45359237;
+  } else if (currentUnitSystem === "metric") {
+    const cm = parseFloat(document.getElementById("calc-height-cm").value);
+    const kg = parseFloat(document.getElementById("calc-weight-kg").value);
+
+    if (isNaN(cm) || cm < 80 || isNaN(kg) || kg < 20) {
+      alert("Please enter valid height and weight values.");
+      return;
+    }
+    heightCm = cm;
+    weightKg = kg;
+  } else if (currentUnitSystem === "other") {
+    const m = parseFloat(document.getElementById("calc-height-m").value);
+    const stones = parseFloat(document.getElementById("calc-weight-stone").value);
+    const lbs = parseFloat(document.getElementById("calc-weight-other-lbs").value || 0);
+
+    if (isNaN(m) || m < 0.5 || isNaN(stones) || stones < 1) {
+      alert("Please enter valid height and weight values.");
+      return;
+    }
+    heightCm = m * 100;
+    weightKg = (stones * 14 + lbs) * 0.45359237;
+  }
+
+  // Calculate BMR
+  let bmr = 0;
+  if (formula === "mifflin") {
+    if (gender === "male") {
+      bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+    } else {
+      bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+    }
+  } else if (formula === "harris") {
+    if (gender === "male") {
+      bmr = 13.397 * weightKg + 4.799 * heightCm - 5.677 * age + 88.362;
+    } else {
+      bmr = 9.247 * weightKg + 3.098 * heightCm - 4.330 * age + 447.593;
+    }
+  } else if (formula === "katch") {
+    const lbm = weightKg * (1 - bodyFat / 100);
+    bmr = 370 + 21.6 * lbm;
+  }
+
+  // Get activity factor
+  let factor = 1.2;
+  if (activity === "bmr") factor = 1.0;
+  else if (activity === "sedentary") factor = 1.2;
+  else if (activity === "light") factor = 1.375;
+  else if (activity === "moderate") factor = 1.465;
+  else if (activity === "active") factor = 1.55;
+  else if (activity === "very_active") factor = 1.725;
+  else if (activity === "extra_active") factor = 1.9;
+
+  const tdee = bmr * factor;
+
+  // Calculate BMI
+  const heightM = heightCm / 100;
+  const bmi = weightKg / (heightM * heightM);
+
+  // Render BMI Results
+  const bmiScoreEl = document.getElementById("calc-bmi-score");
+  const bmiLabelEl = document.getElementById("calc-bmi-label");
+  const bmiMarkerEl = document.getElementById("calc-bmi-marker");
+  const bmiTargetEl = document.getElementById("calc-bmi-weight-target");
+
+  const roundedBmi = bmi.toFixed(1);
+  bmiScoreEl.textContent = roundedBmi;
+
+  let category = "Healthy Weight";
+  let cls = "normal";
+  let markerPct = 0;
+
   if (bmi < 18.5) {
-    category = "Underweight"; cls = "underweight";
+    category = "Underweight";
+    cls = "underweight";
     markerPct = Math.max(0, ((bmi - 10) / 8.5) * 25);
   } else if (bmi < 25) {
-    category = "Healthy Weight"; cls = "normal";
+    category = "Healthy Weight";
+    cls = "normal";
     markerPct = 25 + ((bmi - 18.5) / 6.5) * 37.5;
   } else if (bmi < 30) {
-    category = "Overweight"; cls = "overweight";
+    category = "Overweight";
+    cls = "overweight";
     markerPct = 62.5 + ((bmi - 25) / 5) * 19.5;
   } else {
-    category = "Obese"; cls = "obese";
+    category = "Obese";
+    cls = "obese";
     markerPct = Math.min(99, 82 + ((bmi - 30) / 10) * 18);
   }
 
-  scoreEl.className = `bmi-result-score ${cls}`;
-  labelEl.textContent = category;
-  if (markerEl) markerEl.style.left = `${markerPct}%`;
+  bmiScoreEl.className = `calc-bmi-score ${cls}`;
+  bmiLabelEl.textContent = category;
+  if (bmiMarkerEl) bmiMarkerEl.style.left = `${markerPct}%`;
 
-  // Auto-suggest goal based on BMI result
-  if (cls === "underweight") {
-    STATE.user.goal = "Build muscle";
-  } else if (cls === "overweight" || cls === "obese") {
-    STATE.user.goal = "Lose weight";
+  // BMI Healthy Weight target ranges
+  const minHealthyKg = 18.5 * (heightM * heightM);
+  const maxHealthyKg = 25.0 * (heightM * heightM);
+
+  if (currentUnitSystem === "us") {
+    const minLbs = minHealthyKg * 2.20462262;
+    const maxLbs = maxHealthyKg * 2.20462262;
+    bmiTargetEl.textContent = `Healthy weight range for your height: ${minLbs.toFixed(1)} lbs - ${maxLbs.toFixed(1)} lbs`;
+  } else if (currentUnitSystem === "metric") {
+    bmiTargetEl.textContent = `Healthy weight range for your height: ${minHealthyKg.toFixed(1)} kg - ${maxHealthyKg.toFixed(1)} kg`;
+  } else if (currentUnitSystem === "other") {
+    const minStones = Math.floor((minHealthyKg * 2.20462262) / 14);
+    const minLbsRemainder = Math.round((minHealthyKg * 2.20462262) % 14);
+    const maxStones = Math.floor((maxHealthyKg * 2.20462262) / 14);
+    const maxLbsRemainder = Math.round((maxHealthyKg * 2.20462262) % 14);
+    bmiTargetEl.textContent = `Healthy weight range for your height: ${minStones} st ${minLbsRemainder} lbs - ${maxStones} st ${maxLbsRemainder} lbs`;
   }
-}
 
-function initBMIToggles() {
-  const configs = [
-    {
-      btnId: "bmi-toggle-onboarding", panelId: "bmi-panel-onboarding",
-      hId: "bmi-height-onboarding", wId: "bmi-weight-onboarding",
-      scoreId: "bmi-score-onboarding", labelId: "bmi-label-onboarding",
-      markerId: "bmi-marker-onboarding",
-    },
-    {
-      btnId: "bmi-toggle-profile", panelId: "bmi-panel-profile",
-      hId: "bmi-height-profile", wId: "bmi-weight-profile",
-      scoreId: "bmi-score-profile", labelId: "bmi-label-profile",
-      markerId: "bmi-marker-profile",
-    },
+  // Render Calorie Targets
+  const multiplier = (settingsUnit === "kilojoules") ? 4.184 : 1.0;
+  const unitLabel = (settingsUnit === "kilojoules") ? "kJ/day" : "Calories/day";
+
+  const targets = [
+    { id: "cal-target-maintain", factor: 0, label: "Maintain weight", pct: 100 },
+    { id: "cal-target-lose-mild", factor: -250, label: "Mild weight loss", sub: "0.25 kg/week", pct: 90 },
+    { id: "cal-target-lose-weight", factor: -500, label: "Weight loss", sub: "0.5 kg/week", pct: 79 },
+    { id: "cal-target-lose-extreme", factor: -1000, label: "Extreme weight loss", sub: "1.0 kg/week", pct: 59 },
+    { id: "cal-target-gain-mild", factor: 250, label: "Mild weight gain", sub: "0.25 kg/week", pct: 110 },
+    { id: "cal-target-gain-weight", factor: 500, label: "Weight gain", sub: "0.5 kg/week", pct: 121 },
+    { id: "cal-target-gain-fast", factor: 1000, label: "Fast weight gain", sub: "1.0 kg/week", pct: 141 }
   ];
 
-  configs.forEach(({ btnId, panelId, hId, wId, scoreId, labelId, markerId }) => {
-    const btn = document.getElementById(btnId);
-    const panel = document.getElementById(panelId);
-    if (!btn || !panel) return;
+  let anyUnderLimit = false;
 
-    btn.addEventListener("click", () => {
-      const expanded = btn.getAttribute("aria-expanded") === "true";
-      btn.setAttribute("aria-expanded", String(!expanded));
-      panel.classList.toggle("open", !expanded);
-    });
+  targets.forEach(t => {
+    const itemEl = document.getElementById(t.id);
+    if (!itemEl) return;
 
-    [hId, wId].forEach(id => {
-      const input = document.getElementById(id);
-      if (input) input.addEventListener("input", () => calcBMI(hId, wId, scoreId, labelId, markerId));
-    });
+    let calVal = tdee + t.factor;
+    const customPct = Math.round((calVal / tdee) * 100);
+
+    if (calVal < 1500) {
+      if (t.id === "cal-target-lose-extreme" || t.id === "cal-target-lose-weight") {
+        anyUnderLimit = true;
+      }
+    }
+
+    const valueText = `${Math.round(calVal * multiplier).toLocaleString()} ${unitLabel}`;
+    itemEl.querySelector(".cal-target-value").textContent = valueText;
+    itemEl.querySelector(".cal-target-percent").textContent = `${customPct}%`;
+  });
+
+  // Disclaimer warning toggle
+  const disclaimerEl = document.getElementById("cal-result-disclaimer");
+  if (disclaimerEl) {
+    if (anyUnderLimit) {
+      disclaimerEl.style.display = "block";
+      const kcalLimit = 1500;
+      const displayLimit = Math.round(kcalLimit * multiplier);
+      disclaimerEl.textContent = `Please consult with a doctor when losing 1 kg or more per week since it requires that you consume less than the minimum recommendation of ${displayLimit.toLocaleString()} ${unitLabel}.`;
+    } else {
+      disclaimerEl.style.display = "none";
+    }
+  }
+
+  window.lastTDEE = tdee;
+  window.lastMultiplier = multiplier;
+  window.lastUnitLabel = unitLabel;
+
+  renderZigzagTable(1);
+  renderActivityLevelsTable(tdee, multiplier, unitLabel);
+
+  document.getElementById("calculator-results").classList.remove("hidden");
+}
+
+function renderZigzagTable(scheduleNum) {
+  const tdee = window.lastTDEE;
+  const mult = window.lastMultiplier;
+  const label = window.lastUnitLabel;
+  if (!tdee) return;
+
+  const wrapper = document.getElementById("zigzag-schedule-table");
+  if (!wrapper) return;
+
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  let html = `
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Mild weight loss (0.25 kg/week)</th>
+          <th>Weight loss (0.5 kg/week)</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  days.forEach((day, index) => {
+    let mildLossCal = 0;
+    let weightLossCal = 0;
+
+    if (scheduleNum === 1) {
+      if (day === "Saturday" || day === "Sunday") {
+        mildLossCal = tdee;
+        weightLossCal = tdee;
+      } else {
+        mildLossCal = tdee - 350;
+        weightLossCal = tdee - 700;
+      }
+    } else {
+      const mildWaveOffsets = [-500, -333, -167, 0, -83, -250, -417];
+      mildLossCal = tdee + mildWaveOffsets[index];
+
+      const lossWaveOffsets = [-925, -642, -358, -75, -217, -500, -783];
+      weightLossCal = tdee + lossWaveOffsets[index];
+    }
+
+    html += `
+      <tr>
+        <td><strong>${day}</strong></td>
+        <td>${Math.round(mildLossCal * mult).toLocaleString()} ${label}</td>
+        <td>${Math.round(weightLossCal * mult).toLocaleString()} ${label}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  wrapper.innerHTML = html;
+}
+
+function renderActivityLevelsTable(tdee, mult, label) {
+  const tbody = document.querySelector("#table-activity-levels tbody");
+  if (!tbody) return;
+
+  const activitySelect = document.getElementById("calc-activity");
+  let currentFactor = 1.2;
+  const actVal = activitySelect.value;
+  if (actVal === "bmr") currentFactor = 1.0;
+  else if (actVal === "sedentary") currentFactor = 1.2;
+  else if (actVal === "light") currentFactor = 1.375;
+  else if (actVal === "moderate") currentFactor = 1.465;
+  else if (actVal === "active") currentFactor = 1.55;
+  else if (actVal === "very_active") currentFactor = 1.725;
+  else if (actVal === "extra_active") currentFactor = 1.9;
+
+  const bmr = tdee / currentFactor;
+
+  const levels = [
+    { name: "Basal Metabolic Rate (BMR)", factor: 1.0 },
+    { name: "Sedentary: little or no exercise", factor: 1.2 },
+    { name: "Light: exercise 1-3 times/week", factor: 1.375 },
+    { name: "Moderate: exercise 4-5 times/week", factor: 1.465 },
+    { name: "Active: daily exercise or intense exercise 3-4 times/week", factor: 1.55 },
+    { name: "Very Active: intense exercise 6-7 times/week", factor: 1.725 },
+    { name: "Extra Active: very intense exercise daily, or physical job", factor: 1.9 }
+  ];
+
+  tbody.innerHTML = "";
+
+  levels.forEach(lvl => {
+    const lvlTdee = bmr * lvl.factor;
+    const diffCal = lvlTdee - tdee;
+
+    let weightDiffText = "";
+    if (currentUnitSystem === "us") {
+      const lbs = (diffCal * 7) / 3500;
+      const sign = lbs >= 0 ? "+" : "";
+      weightDiffText = `${sign}${lbs.toFixed(2)} lbs`;
+    } else {
+      const kg = (diffCal * 7) / 7700;
+      const sign = kg >= 0 ? "+" : "";
+      weightDiffText = `${sign}${kg.toFixed(2)} kg`;
+    }
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><strong>${lvl.name}</strong></td>
+      <td>${weightDiffText}</td>
+    </tr>
+    `;
+    tbody.appendChild(row);
   });
 }
 
+function clearCalculator() {
+  document.getElementById("calculator-form").reset();
+  updateUnitInputs(currentUnitSystem);
+  document.getElementById("calculator-results").classList.add("hidden");
+  window.lastTDEE = null;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  initBMIToggles();
+  // 1. Initialize unit inputs
+  updateUnitInputs("us");
+
+  // 2. Unit system tabs toggler
+  document.querySelectorAll(".calculator-unit-tabs .unit-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".calculator-unit-tabs .unit-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      updateUnitInputs(btn.dataset.unit);
+      
+      if (window.lastTDEE) {
+        calculateCalorieAndBMI();
+      }
+    });
+  });
+
+  // 3. Settings panel toggle
+  const settingsToggleBtn = document.getElementById("btn-toggle-calc-settings");
+  const settingsPanel = document.getElementById("calc-settings-panel");
+  if (settingsToggleBtn && settingsPanel) {
+    settingsToggleBtn.addEventListener("click", () => {
+      const isHidden = settingsPanel.classList.toggle("hidden");
+      settingsToggleBtn.textContent = isHidden ? "+ Settings" : "- Settings";
+    });
+  }
+
+  // 4. Formula select toggle body fat row
+  const formulaSelect = document.getElementById("calc-settings-formula");
+  const bodyFatRow = document.getElementById("row-bodyfat");
+  if (formulaSelect && bodyFatRow) {
+    formulaSelect.addEventListener("change", () => {
+      if (formulaSelect.value === "katch") {
+        bodyFatRow.classList.remove("hidden");
+      } else {
+        bodyFatRow.classList.add("hidden");
+      }
+    });
+  }
+
+  // 5. Calculate and Clear buttons
+  const calcBtn = document.getElementById("btn-calc-calculate");
+  const clearBtn = document.getElementById("btn-calc-clear");
+  if (calcBtn) calcBtn.addEventListener("click", calculateCalorieAndBMI);
+  if (clearBtn) clearBtn.addEventListener("click", clearCalculator);
+
+  // 6. Food Energy Converter event listeners
+  const convertBtn = document.getElementById("btn-convert");
+  const convertClearBtn = document.getElementById("btn-converter-clear");
+  const converterInput = document.getElementById("converter-input-val");
+  const converterFrom = document.getElementById("converter-from");
+  const converterTo = document.getElementById("converter-to");
+
+  if (convertBtn) convertBtn.addEventListener("click", runFoodEnergyConversion);
+  if (convertClearBtn) {
+    convertClearBtn.addEventListener("click", () => {
+      if (converterInput) converterInput.value = 1;
+      runFoodEnergyConversion();
+    });
+  }
+  
+  [converterInput, converterFrom, converterTo].forEach(el => {
+    if (el) el.addEventListener("input", runFoodEnergyConversion);
+    if (el) el.addEventListener("change", runFoodEnergyConversion);
+  });
+
+  // Initial converter run
+  runFoodEnergyConversion();
+
+  // 7. Explanatory Accordion drawers
+  document.querySelectorAll(".calc-accordion-item").forEach(item => {
+    const trigger = item.querySelector(".accordion-trigger-btn");
+    const content = item.querySelector(".accordion-panel-content");
+    if (trigger && content) {
+      trigger.addEventListener("click", () => {
+        const isActive = trigger.classList.toggle("active");
+        content.classList.toggle("hidden", !isActive);
+      });
+    }
+  });
+
+  // 8. Zigzag schedule tabs toggler
+  document.querySelectorAll(".zigzag-schedule-selector .zigzag-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".zigzag-schedule-selector .zigzag-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderZigzagTable(parseInt(btn.dataset.schedule));
+    });
+  });
 });

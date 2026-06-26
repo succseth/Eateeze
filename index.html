@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eateeze — AI-Powered Personal Recipe Generator</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <!-- Google Fonts: Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -129,46 +130,7 @@
             </button>
           </div>
         </div>
-        <!-- Step 3: BMI Calculator (collapsible) -->
-        <div class="onboarding-section bmi-section">
-          <button class="bmi-toggle-btn" id="bmi-toggle-onboarding" aria-expanded="false">
-            <div class="bmi-toggle-left">
-              <div class="bmi-toggle-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              </div>
-              <div>
-                <span class="bmi-toggle-title">BMI Calculator</span>
-                <span class="bmi-toggle-sub">Optional · personalizes calorie targets</span>
-              </div>
-            </div>
-            <svg class="bmi-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="bmi-panel" id="bmi-panel-onboarding">
-            <div class="bmi-inputs-row">
-              <div class="bmi-input-group">
-                <label>Height (cm)</label>
-                <input type="number" class="bmi-input" id="bmi-height-onboarding" placeholder="175" min="100" max="250">
-              </div>
-              <div class="bmi-input-group">
-                <label>Weight (kg)</label>
-                <input type="number" class="bmi-input" id="bmi-weight-onboarding" placeholder="70" min="30" max="300">
-              </div>
-            </div>
-            <div class="bmi-result" id="bmi-result-onboarding">
-              <div class="bmi-result-score" id="bmi-score-onboarding">--</div>
-              <div class="bmi-result-label" id="bmi-label-onboarding">Enter height & weight</div>
-              <div class="bmi-scale">
-                <div class="bmi-scale-bar">
-                  <div class="bmi-scale-fill" id="bmi-scale-fill-onboarding"></div>
-                  <div class="bmi-scale-marker" id="bmi-marker-onboarding"></div>
-                </div>
-                <div class="bmi-scale-labels">
-                  <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Step 3: BMI Calculator removed (moved to dedicated tab) -->
       </div>
     </section>
 
@@ -336,6 +298,370 @@
           </div>
         </div>
 
+        </div>
+
+        <!-- PANEL E: CALCULATORS DASHBOARD -->
+        <div id="panel-calculator" class="tab-panel">
+          <div class="feed-header">
+            <div>
+              <span class="welcome-text">Health Calculators</span>
+              <h2 class="app-title">Calculators</h2>
+            </div>
+          </div>
+
+          <!-- Unit Selector Tabs -->
+          <div class="calculator-unit-tabs">
+            <button class="unit-tab-btn active" data-unit="us">US Units</button>
+            <button class="unit-tab-btn" data-unit="metric">Metric Units</button>
+            <button class="unit-tab-btn" data-unit="other">Other Units</button>
+          </div>
+
+          <!-- Main Calculator Card -->
+          <div class="white-card calculator-input-card">
+            <form id="calculator-form" onsubmit="return false;">
+              <div class="calc-inputs-grid">
+                
+                <!-- Age & Gender Input Row -->
+                <div class="calc-input-row">
+                  <div class="calc-input-group">
+                    <label class="calc-label">Age</label>
+                    <input type="number" id="calc-age" class="calc-input-field" value="25" min="15" max="80">
+                    <span class="field-hint">Ages 15 - 80</span>
+                  </div>
+                  <div class="calc-input-group">
+                    <label class="calc-label">Gender</label>
+                    <div class="gender-radio-group">
+                      <label class="radio-label">
+                        <input type="radio" name="calc-gender" value="male" checked>
+                        <span>Male</span>
+                      </label>
+                      <label class="radio-label">
+                        <input type="radio" name="calc-gender" value="female">
+                        <span>Female</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Height Row (Dynamic labels/inputs updated by JS based on unit tab) -->
+                <div class="calc-input-row" id="row-height">
+                  <!-- Default US: Feet and Inches -->
+                  <div class="calc-input-group height-ft-group">
+                    <label class="calc-label">Height (feet)</label>
+                    <input type="number" id="calc-height-ft" class="calc-input-field" value="5" min="1" max="8">
+                  </div>
+                  <div class="calc-input-group height-in-group">
+                    <label class="calc-label">Height (inches)</label>
+                    <input type="number" id="calc-height-in" class="calc-input-field" value="10" min="0" max="11">
+                  </div>
+                </div>
+
+                <!-- Weight Row (Dynamic updated by JS based on unit tab) -->
+                <div class="calc-input-row" id="row-weight">
+                  <!-- Default US: Pounds -->
+                  <div class="calc-input-group">
+                    <label class="calc-label" id="label-weight">Weight (lbs)</label>
+                    <input type="number" id="calc-weight" class="calc-input-field" value="165" min="30" max="800">
+                  </div>
+                  <!-- Stone input (only shown in Other Units) -->
+                  <div class="calc-input-group hidden" id="calc-weight-stone-group">
+                    <label class="calc-label">Weight (stones)</label>
+                    <input type="number" id="calc-weight-stone" class="calc-input-field" value="11" min="0" max="60">
+                  </div>
+                </div>
+
+                <!-- Activity Selector -->
+                <div class="calc-input-row">
+                  <div class="calc-input-group full-width">
+                    <label class="calc-label">Activity Level</label>
+                    <select id="calc-activity" class="calc-select-field">
+                      <option value="bmr">BMR (Basal Metabolic Rate)</option>
+                      <option value="sedentary">Sedentary: little or no exercise</option>
+                      <option value="light">Light: exercise 1-3 times/week</option>
+                      <option value="moderate" selected>Moderate: exercise 4-5 times/week</option>
+                      <option value="active">Active: daily exercise or intense exercise 3-4 times/week</option>
+                      <option value="very_active">Very Active: intense exercise 6-7 times/week</option>
+                      <option value="extra_active">Extra Active: very intense exercise daily, or physical job</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Collapsible Settings Panel -->
+              <div class="calc-settings-section">
+                <button type="button" class="settings-toggle-btn" id="btn-toggle-calc-settings">
+                  <span>+ Settings</span>
+                </button>
+                <div class="calc-settings-panel hidden" id="calc-settings-panel">
+                  <div class="calc-settings-row">
+                    <div class="calc-input-group">
+                      <label class="calc-label">Results Unit</label>
+                      <select id="calc-settings-unit" class="calc-select-field">
+                        <option value="calories" selected>Calories (kcal)</option>
+                        <option value="kilojoules">Kilojoules (kJ)</option>
+                      </select>
+                    </div>
+                    <div class="calc-input-group">
+                      <label class="calc-label">BMR Estimation Formula</label>
+                      <select id="calc-settings-formula" class="calc-select-field">
+                        <option value="mifflin" selected>Mifflin-St Jeor Equation</option>
+                        <option value="harris">Revised Harris-Benedict Equation</option>
+                        <option value="katch">Katch-McArdle Formula</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="calc-settings-row hidden" id="row-bodyfat">
+                    <div class="calc-input-group">
+                      <label class="calc-label">Body Fat (%)</label>
+                      <input type="number" id="calc-bodyfat" class="calc-input-field" value="20" min="5" max="80">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="calc-buttons-row">
+                <button type="button" id="btn-calc-calculate" class="btn btn-primary btn-calc">
+                  <span>Calculate</span>
+                </button>
+                <button type="button" id="btn-calc-clear" class="btn btn-secondary btn-calc">
+                  <span>Clear</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- RESULTS DISPLAY PANEL (Initially hidden, shown after Calculate) -->
+          <div id="calculator-results" class="calculator-results-section hidden">
+            
+            <!-- BMI Result Card -->
+            <div class="white-card result-card bmi-result-card">
+              <h3>Body Mass Index (BMI) Result</h3>
+              <div class="calc-bmi-display">
+                <div class="calc-bmi-score" id="calc-bmi-score">--</div>
+                <div class="calc-bmi-label" id="calc-bmi-label">Enter values above</div>
+              </div>
+              <div class="bmi-scale">
+                <div class="bmi-scale-bar">
+                  <div class="bmi-scale-marker" id="calc-bmi-marker"></div>
+                </div>
+                <div class="bmi-scale-labels">
+                  <span>&lt;18.5 (Under)</span>
+                  <span>18.5-25 (Normal)</span>
+                  <span>25-30 (Over)</span>
+                  <span>30+ (Obese)</span>
+                </div>
+              </div>
+              <p class="bmi-target-weight" id="calc-bmi-weight-target"></p>
+            </div>
+
+            <!-- Daily Calorie Targets Card -->
+            <div class="white-card result-card calorie-result-card">
+              <h3>Daily Calorie Estimates</h3>
+              <p class="results-intro">The results show daily energy intake needed to maintain, lose, or gain weight at different rates:</p>
+              
+              <div class="calorie-targets-grid">
+                <div class="cal-target-item maintain" id="cal-target-maintain">
+                  <div class="cal-target-label-box">
+                    <strong>Maintain weight</strong>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">100%</span>
+                  </div>
+                </div>
+                <div class="cal-target-item lose-mild" id="cal-target-lose-mild">
+                  <div class="cal-target-label-box">
+                    <strong>Mild weight loss</strong>
+                    <span class="cal-target-subtext">0.25 kg/week</span>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">--</span>
+                  </div>
+                </div>
+                <div class="cal-target-item lose-weight" id="cal-target-lose-weight">
+                  <div class="cal-target-label-box">
+                    <strong>Weight loss</strong>
+                    <span class="cal-target-subtext">0.5 kg/week</span>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">--</span>
+                  </div>
+                </div>
+                <div class="cal-target-item lose-extreme" id="cal-target-lose-extreme">
+                  <div class="cal-target-label-box">
+                    <strong>Extreme weight loss</strong>
+                    <span class="cal-target-subtext">1.0 kg/week</span>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">--</span>
+                  </div>
+                </div>
+
+                <div class="cal-target-item gain-mild" id="cal-target-gain-mild">
+                  <div class="cal-target-label-box">
+                    <strong>Mild weight gain</strong>
+                    <span class="cal-target-subtext">0.25 kg/week</span>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">--</span>
+                  </div>
+                </div>
+                <div class="cal-target-item gain-weight" id="cal-target-gain-weight">
+                  <div class="cal-target-label-box">
+                    <strong>Weight gain</strong>
+                    <span class="cal-target-subtext">0.5 kg/week</span>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">--</span>
+                  </div>
+                </div>
+                <div class="cal-target-item gain-fast" id="cal-target-gain-fast">
+                  <div class="cal-target-label-box">
+                    <strong>Fast weight gain</strong>
+                    <span class="cal-target-subtext">1.0 kg/week</span>
+                  </div>
+                  <div class="cal-target-val-box">
+                    <span class="cal-target-value">--</span>
+                    <span class="cal-target-percent">--</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Warning / Note -->
+              <p class="cal-result-disclaimer" id="cal-result-disclaimer">
+                Please consult a doctor when losing 1 kg or more per week, as it requires consuming less than the minimum recommendation of 1,500 Calories/day.
+              </p>
+            </div>
+
+            <!-- Zigzag Calorie Cycling -->
+            <div class="white-card result-card zigzag-result-card">
+              <h3>Zigzag Calorie Cycling</h3>
+              <p>As you keep a low-calorie diet, your body will likely adapt to the new, lower energy environment. Zigzag calorie cycling (or "zigzag diet") is a method of calorie consumption that can help you avoid weight-loss plateaus.</p>
+              
+              <!-- Tab toggles for Zigzag schedule -->
+              <div class="zigzag-schedule-selector">
+                <button type="button" class="zigzag-tab-btn active" data-schedule="1">Zigzag diet schedule 1</button>
+                <button type="button" class="zigzag-tab-btn" data-schedule="2">Zigzag diet schedule 2</button>
+              </div>
+
+              <!-- Tables populated dynamically by JS -->
+              <div class="zigzag-table-wrapper" id="zigzag-schedule-table">
+                <!-- Tabulated values here -->
+              </div>
+            </div>
+
+            <!-- Activity Levels Details -->
+            <div class="white-card result-card activity-result-card">
+              <h3>Activity Levels</h3>
+              <p>Another effective way to change weight is increasing your activity level. Below is an estimated list of weight lost/gained per week based on varying activity levels, assuming a constant intake of your maintenance level calories.</p>
+              <div class="table-container">
+                <table class="styled-table" id="table-activity-levels">
+                  <thead>
+                    <tr>
+                      <th>Activity Level</th>
+                      <th>Weight Difference / week</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Food Energy Converter Section -->
+          <div class="white-card food-converter-card">
+            <h3>Food Energy Converter</h3>
+            <p class="card-desc">Convert between calories and other common food energy units.</p>
+            
+            <div class="converter-inputs">
+              <input type="number" id="converter-input-val" class="calc-input-field" value="1">
+              
+              <select id="converter-from" class="calc-select-field">
+                <option value="kcal">Calorie (Nutritional, kcal)</option>
+                <option value="cal">calorie (cal)</option>
+                <option value="kJ">Kilojoules (kJ)</option>
+                <option value="J">Joules (J)</option>
+              </select>
+              
+              <span class="converter-equal">=</span>
+              
+              <div id="converter-output-display" class="converter-output-val">4.184</div>
+              
+              <select id="converter-to" class="calc-select-field">
+                <option value="kcal">Calorie (Nutritional, kcal)</option>
+                <option value="cal">calorie (cal)</option>
+                <option value="kJ" selected>Kilojoules (kJ)</option>
+                <option value="J">Joules (J)</option>
+              </select>
+            </div>
+            
+            <div class="converter-buttons">
+              <button type="button" id="btn-convert" class="btn btn-primary btn-sm">Calculate</button>
+              <button type="button" id="btn-converter-clear" class="btn btn-secondary btn-sm">Clear</button>
+            </div>
+
+            <!-- Explanatory paragraphs wrapped in a drop down menu -->
+            <div class="accordions-container">
+              <div class="calc-accordion-item">
+                <button class="accordion-trigger-btn">
+                  <span>How Food Energy Conversion Works</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="accordion-panel-content hidden">
+                  <p>Food energy is the energy that humans and animals derive from their food, through the process of cellular respiration. Cell respiration involves the chemical reaction of food molecules (like glucose) with molecular oxygen to produce carbon dioxide, water, and energy (ATP).</p>
+                  <p>Common units used to measure food energy are:</p>
+                  <ul>
+                    <li><strong>Calorie (Nutritional, kcal)</strong>: The amount of energy required to raise the temperature of 1 kilogram of water by 1°C. Equivalent to 1,000 small calories or 1 kilocalorie. This is the unit commonly found on food nutrition labels.</li>
+                    <li><strong>calorie (cal)</strong>: The amount of energy required to raise the temperature of 1 gram of water by 1°C. 1 kcal = 1,000 cal.</li>
+                    <li><strong>Kilojoules (kJ)</strong>: The metric unit of food energy. 1 Calorie (kcal) is equivalent to approximately 4.184 Kilojoules (kJ).</li>
+                    <li><strong>Joules (J)</strong>: The SI unit of energy. 1 kJ = 1,000 J.</li>
+                  </ul>
+                  <p>Formula used for conversion: 1 kcal = 4.184 kJ = 4184 J = 1000 cal.</p>
+                </div>
+              </div>
+
+              <div class="calc-accordion-item">
+                <button class="accordion-trigger-btn">
+                  <span>Calorie Calculations & BMR Equations Explained</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="accordion-panel-content hidden">
+                  <p>Our calorie calculator estimates the daily calorie requirements needed to maintain, lose, or gain weight based on several scientifically validated formulas for Basal Metabolic Rate (BMR):</p>
+                  
+                  <h4>Mifflin-St Jeor Equation</h4>
+                  <p>Considered the most accurate standard formula for estimating BMR in healthy individuals without measured body fat percentage:</p>
+                  <pre>Men:   BMR = 10 * weight(kg) + 6.25 * height(cm) - 5 * age(years) + 5
+Women: BMR = 10 * weight(kg) + 6.25 * height(cm) - 5 * age(years) - 161</pre>
+
+                  <h4>Revised Harris-Benedict Equation</h4>
+                  <p>An older but highly popular formula revised in 1984 by Roza and Shizgal:</p>
+                  <pre>Men:   BMR = 13.397 * weight(kg) + 4.799 * height(cm) - 5.677 * age(years) + 88.362
+Women: BMR = 9.247 * weight(kg) + 3.098 * height(cm) - 4.330 * age(years) + 447.593</pre>
+
+                  <h4>Katch-McArdle Formula</h4>
+                  <p>Estimates BMR based on lean body mass (LBM). Ideal for individuals who know their body fat percentage:</p>
+                  <pre>BMR = 370 + 21.6 * LBM
+Where LBM = weight(kg) * (1 - body_fat_percentage / 100)</pre>
+
+                  <p>Once BMR is calculated, it is multiplied by your activity level factor (ranging from 1.0 for BMR only, to 1.9 for extra active) to estimate your Total Daily Energy Expenditure (TDEE). Caloric deficits or surpluses are then applied to establish your weight change goals.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <!-- PANEL D: PROFILE / PREFERENCES -->
         <div id="panel-profile" class="tab-panel">
           <div class="feed-header">
@@ -393,46 +719,7 @@
               </div>
             </div>
 
-            <!-- BMI Calculator (collapsible, in profile) -->
-            <div class="profile-input-group">
-              <button class="bmi-toggle-btn" id="bmi-toggle-profile" aria-expanded="false">
-                <div class="bmi-toggle-left">
-                  <div class="bmi-toggle-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  </div>
-                  <div>
-                    <span class="bmi-toggle-title">BMI Calculator</span>
-                    <span class="bmi-toggle-sub">Optional · personalizes calorie targets</span>
-                  </div>
-                </div>
-                <svg class="bmi-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-              <div class="bmi-panel" id="bmi-panel-profile">
-                <div class="bmi-inputs-row">
-                  <div class="bmi-input-group">
-                    <label>Height (cm)</label>
-                    <input type="number" class="bmi-input" id="bmi-height-profile" placeholder="175" min="100" max="250">
-                  </div>
-                  <div class="bmi-input-group">
-                    <label>Weight (kg)</label>
-                    <input type="number" class="bmi-input" id="bmi-weight-profile" placeholder="70" min="30" max="300">
-                  </div>
-                </div>
-                <div class="bmi-result" id="bmi-result-profile">
-                  <div class="bmi-result-score" id="bmi-score-profile">--</div>
-                  <div class="bmi-result-label" id="bmi-label-profile">Enter height & weight</div>
-                  <div class="bmi-scale">
-                    <div class="bmi-scale-bar">
-                      <div class="bmi-scale-fill" id="bmi-scale-fill-profile"></div>
-                      <div class="bmi-scale-marker" id="bmi-marker-profile"></div>
-                    </div>
-                    <div class="bmi-scale-labels">
-                      <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- BMI Calculator removed (moved to dedicated tab) -->
 
             <button class="btn btn-primary" id="btn-profile-rebuild">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
@@ -462,6 +749,10 @@
         <button class="nav-tab" data-tab="macros">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
           <span class="nav-label">Macros</span>
+        </button>
+        <button class="nav-tab" data-tab="calculator">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"></path></svg>
+          <span class="nav-label">Calculator</span>
         </button>
         <button class="nav-tab" data-tab="profile">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
