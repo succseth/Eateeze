@@ -238,7 +238,7 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border-light);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   padding: 8px 12px env(safe-area-inset-bottom, 8px) 12px;
   z-index: 30;
   box-sizing: border-box;
@@ -746,6 +746,7 @@ h5 {
   background: radial-gradient(ellipse at 30% 20%, rgba(46, 125, 50, 0.12) 0%, transparent 60%),
               radial-gradient(ellipse at 70% 80%, rgba(0, 191, 165, 0.08) 0%, transparent 60%),
               var(--bg-dark);
+  overflow-y: auto;
 }
 
 .login-container {
@@ -3040,4 +3041,31 @@ html.light-mode .accordion-panel-content pre {
 .calc-bmi-score.normal      { color: var(--primary-light); }
 .calc-bmi-score.overweight  { color: #FF9800; }
 .calc-bmi-score.obese       { color: #F44336; }
+
+/* Calculator cards matching meal planner cards style */
+.calculator-input-card,
+.result-card,
+.food-converter-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-light) !important;
+  box-shadow: none !important;
+}
+
+.calculator-input-card:hover,
+.result-card:hover,
+.food-converter-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Light mode overrides for calculators cards */
+html.light-mode .calculator-input-card,
+html.light-mode .result-card,
+html.light-mode .food-converter-card {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: var(--text-dark) !important;
+}
+
 
